@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,7 +44,7 @@ public class UrlShortenerControllerTest {
         UrlRequest request = new UrlRequest();
         request.setUrl(originalUrl);
 
-        mockMvc.perform(post("/api/v1/shorten")
+        mockMvc.perform(post("/api/v1/shortener")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -65,7 +64,7 @@ public class UrlShortenerControllerTest {
 
         when(urlShortenerService.getOriginalUrl(shortCode)).thenReturn(urlMapping);
 
-        mockMvc.perform(get("/api/v1/{shortCode}", shortCode))
+        mockMvc.perform(get("/api/v1/shortener/{shortCode}", shortCode))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl(originalUrl));
     }
@@ -83,7 +82,7 @@ public class UrlShortenerControllerTest {
 
         when(urlShortenerService.getOriginalUrl(shortCode)).thenReturn(urlMapping);
 
-        mockMvc.perform(get("/api/v1/info/{shortCode}", shortCode))
+        mockMvc.perform(get("/api/v1/shortener/info/{shortCode}", shortCode))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.shortCode").value(shortCode))
                 .andExpect(jsonPath("$.originalUrl").value(urlMapping.getOriginalUrl()))
@@ -99,7 +98,7 @@ public class UrlShortenerControllerTest {
         when(urlShortenerService.shortenUrl(""))
             .thenThrow(new com.origin.urlshortener.exception.InvalidUrlException("Validation failed: {url=URL cannot be empty}"));
 
-        mockMvc.perform(post("/api/v1/shorten")
+        mockMvc.perform(post("/api/v1/shortener")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(emptyRequest)))
                 .andExpect(status().isBadRequest())
@@ -114,7 +113,7 @@ public class UrlShortenerControllerTest {
         when(urlShortenerService.shortenUrl(null))
             .thenThrow(new com.origin.urlshortener.exception.InvalidUrlException("Validation failed: {url=URL cannot be empty}"));
 
-        mockMvc.perform(post("/api/v1/shorten")
+        mockMvc.perform(post("/api/v1/shortener")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(nullRequest)))
                 .andExpect(status().isBadRequest())
@@ -151,7 +150,7 @@ public class UrlShortenerControllerTest {
         when(urlShortenerService.shortenUrl(invalidUrl))
             .thenThrow(new com.origin.urlshortener.exception.InvalidUrlException("Validation failed: " + invalidUrl));
 
-        mockMvc.perform(post("/api/v1/shorten")
+        mockMvc.perform(post("/api/v1/shortener")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
@@ -194,7 +193,7 @@ public class UrlShortenerControllerTest {
         UrlRequest request = new UrlRequest();
         request.setUrl(validUrl);
 
-        mockMvc.perform(post("/api/v1/shorten")
+        mockMvc.perform(post("/api/v1/shortener")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
@@ -209,7 +208,7 @@ public class UrlShortenerControllerTest {
         when(urlShortenerService.getOriginalUrl(shortCode))
             .thenThrow(new com.origin.urlshortener.exception.UrlNotFoundException("Short URL not found: " + shortCode));
 
-        mockMvc.perform(get("/api/v1/info/{shortCode}", shortCode))
+        mockMvc.perform(get("/api/v1/shortener/info/{shortCode}", shortCode))
                 .andExpect(status().isNotFound());
     }
 
@@ -219,7 +218,7 @@ public class UrlShortenerControllerTest {
         when(urlShortenerService.getOriginalUrl(shortCode))
             .thenThrow(new com.origin.urlshortener.exception.UrlNotFoundException("Short URL not found: " + shortCode));
 
-        mockMvc.perform(get("/api/v1/{shortCode}", shortCode))
+        mockMvc.perform(get("/api/v1/shortener/{shortCode}", shortCode))
                 .andExpect(status().isNotFound());
     }
 } 

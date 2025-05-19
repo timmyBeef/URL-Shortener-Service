@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/shortener")
 public class UrlShortenerController {
     private final UrlShortenerService urlShortenerService;
 
@@ -18,7 +18,7 @@ public class UrlShortenerController {
         this.urlShortenerService = urlShortenerService;
     }
 
-    @PostMapping("/shorten")
+    @PostMapping
     public ResponseEntity<UrlMapping> shortenUrl(@Valid @RequestBody UrlRequest request) {
         UrlMapping urlMapping = urlShortenerService.shortenUrl(request.getUrl());
         return new ResponseEntity<>(urlMapping, HttpStatus.CREATED);

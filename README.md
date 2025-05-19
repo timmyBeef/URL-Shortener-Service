@@ -73,7 +73,7 @@ The service uses Base62 encoding (0-9, A-Z, a-z) instead of Base64 for several i
 
 ### Example
 Original URL: `https://www.originenergy.com.au/electricity-gas/plans.html`
-Short URL: `http://localhost:8080/api/v1/2I9Sj7lBtLM`
+Short URL: `http://localhost:8080/api/v1/shortener/2I9Sj7lBtLM`
 
 ### Technical Details
 - Base62 encoding for URL-friendly representation
@@ -111,7 +111,7 @@ The application will start on `http://localhost:8080`
 
 ### Shorten URL
 ```http
-POST /api/v1/shorten
+POST /api/v1/shortener
 Content-Type: application/json
 
 {
@@ -131,14 +131,14 @@ Response:
 
 ### Redirect to Original URL
 ```http
-GET /api/v1/{shortCode}
+GET /api/v1/shortener/{shortCode}
 ```
 This will redirect to the original URL. 
 You can paste it in the browser to test (When the SpringBoot App Server is active)
 
 ### Get URL Information
 ```http
-GET /api/v1/info/{shortCode}
+GET /api/v1/shortener/info/{shortCode}
 ```
 
 Response:
