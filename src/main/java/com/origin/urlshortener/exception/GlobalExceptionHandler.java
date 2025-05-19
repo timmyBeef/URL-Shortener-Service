@@ -6,7 +6,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UrlNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> handleUrlNotFoundException(UrlNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleUrlNotFoundException(UrlNotFoundException ex) {
         ErrorResponse error = new ErrorResponse(
             HttpStatus.NOT_FOUND.value(),
             ex.getMessage(),
@@ -30,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidUrlException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handleInvalidUrlException(InvalidUrlException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleInvalidUrlException(InvalidUrlException ex) {
         ErrorResponse error = new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
             ex.getMessage(),
@@ -57,7 +56,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleAllUncaughtException(Exception ex) {
         ErrorResponse error = new ErrorResponse(
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "An unexpected error occurred: " + ex.getMessage(),

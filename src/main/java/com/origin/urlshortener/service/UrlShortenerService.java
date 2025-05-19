@@ -67,11 +67,6 @@ public class UrlShortenerService {
                 throw new InvalidUrlException("Invalid URL scheme: only http and https are supported");
             }
 
-            // Optional: require at least one dot (not for localhost or IPs)
-            // if (!uri.getHost().contains(".")) {
-            //     throw new InvalidUrlException("Host must be a valid domain (contains a dot)");
-            // }
-
         } catch (URISyntaxException e) {
             throw new InvalidUrlException("Invalid URL format: " + e.getMessage());
         }

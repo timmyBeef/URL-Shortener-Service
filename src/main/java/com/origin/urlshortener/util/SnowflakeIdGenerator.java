@@ -1,14 +1,13 @@
 package com.origin.urlshortener.util;
 
 import org.springframework.stereotype.Component;
-import java.time.Instant;
 
 @Component
 public class SnowflakeIdGenerator {
     private static final long EPOCH = 1288834974657L; // Twitter snowflake epoch (Nov 04, 2010, 01:42:54 UTC)
     
     // Classic Twitter Snowflake bit allocation
-    private static final long SIGN_BITS = 1L;        // Always 0, reserved for future use
+    // private static final long SIGN_BITS = 1L;        // Always 0, reserved for future use
     private static final long TIMESTAMP_BITS = 41L;  // Milliseconds since epoch
     private static final long DATACENTER_ID_BITS = 5L;  // 32 datacenters
     private static final long MACHINE_ID_BITS = 5L;  // 32 machines per datacenter
@@ -20,7 +19,6 @@ public class SnowflakeIdGenerator {
     private static final long MAX_SEQUENCE = ~(-1L << SEQUENCE_BITS);            // 4095
 
     // Bit shifts for each component
-    private static final long SEQUENCE_SHIFT = 0L;
     private static final long MACHINE_ID_SHIFT = SEQUENCE_BITS;
     private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + MACHINE_ID_BITS;
     private static final long TIMESTAMP_SHIFT = SEQUENCE_BITS + MACHINE_ID_BITS + DATACENTER_ID_BITS;
