@@ -41,15 +41,9 @@ public class SnowflakeIdGenerator {
         validateIds();
     }
 
-    private void validateIds() {
-        if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
-            throw new IllegalArgumentException(
-                String.format("Datacenter ID can't be greater than %d or less than 0", MAX_DATACENTER_ID));
-        }
-        if (machineId > MAX_MACHINE_ID || machineId < 0) {
-            throw new IllegalArgumentException(
-                String.format("Machine ID can't be greater than %d or less than 0", MAX_MACHINE_ID));
-        }
+    public String generateShortCode() {
+        long id = nextId();
+        return toBase62(id);
     }
 
     public synchronized long nextId() {
@@ -76,6 +70,17 @@ public class SnowflakeIdGenerator {
 
         lastTimestamp = currentTimestamp;
         return generateId(currentTimestamp, sequence);
+    }
+
+    private void validateIds() {
+        if (datacenterId > MAX_DATACENTER_ID || datacenterId < 0) {
+            throw new IllegalArgumentException(
+                    String.format("Datacenter ID can't be greater than %d or less than 0", MAX_DATACENTER_ID));
+        }
+        if (machineId > MAX_MACHINE_ID || machineId < 0) {
+            throw new IllegalArgumentException(
+                    String.format("Machine ID can't be greater than %d or less than 0", MAX_MACHINE_ID));
+        }
     }
 
     private long waitNextMillis(long lastTimestamp) {
@@ -106,11 +111,6 @@ public class SnowflakeIdGenerator {
 
     private long timeGen() {
         return System.currentTimeMillis();
-    }
-
-    public String generateShortCode() {
-        long id = nextId();
-        return toBase62(id);
     }
 
     private String toBase62(long num) {
