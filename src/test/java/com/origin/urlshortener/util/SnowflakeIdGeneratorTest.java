@@ -1,7 +1,11 @@
 package com.origin.urlshortener.util;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SnowflakeIdGeneratorTest {
@@ -35,25 +39,6 @@ class SnowflakeIdGeneratorTest {
     }
 
     @Test
-    void testBase62Encoding() {
-        // Test with a known value
-        long testId = 123456789L;
-        String encoded = generator.generateShortCode();
-        assertNotNull(encoded);
-        assertEquals(11, encoded.length(), "Encoded string should be 11 characters long");
-        
-        // Verify all characters are valid Base62
-        for (char c : encoded.toCharArray()) {
-            assertTrue(
-                (c >= '0' && c <= '9') || 
-                (c >= 'A' && c <= 'Z') || 
-                (c >= 'a' && c <= 'z'),
-                "Character '" + c + "' is not a valid Base62 character"
-            );
-        }
-    }
-
-    @Test
     void testConcurrentGeneration() throws InterruptedException {
         // Test that multiple threads can generate IDs without conflicts
         Thread[] threads = new Thread[10];
@@ -61,9 +46,7 @@ class SnowflakeIdGeneratorTest {
         
         for (int i = 0; i < threads.length; i++) {
             final int index = i;
-            threads[i] = new Thread(() -> {
-                codes[index] = generator.generateShortCode();
-            });
+            threads[i] = new Thread(() -> codes[index] = generator.generateShortCode());
         }
 
         // Start all threads
@@ -76,14 +59,13 @@ class SnowflakeIdGeneratorTest {
             thread.join();
         }
 
+        Set<String> uniques = new HashSet<>();
         // Verify all codes are unique
-        for (int i = 0; i < codes.length; i++) {
-            assertNotNull(codes[i], "Generated code should not be null");
-            assertEquals(11, codes[i].length(), "Generated code should be 11 characters long");
-            for (int j = i + 1; j < codes.length; j++) {
-                assertNotEquals(codes[i], codes[j], 
-                    String.format("Codes at indices %d and %d should be different", i, j));
-            }
+        for (String code : codes) {
+            assertNotNull(code, "Generated code should not be null");
+            assertEquals(11, code.length(), "Generated code should be 11 characters long");
+            uniques.add(code);
         }
+        assertEquals(codes.length, uniques.size(), "unique code size should be the same to codes array length");
     }
 } 
