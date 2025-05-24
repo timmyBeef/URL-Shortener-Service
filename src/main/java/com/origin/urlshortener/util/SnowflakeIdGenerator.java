@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SnowflakeIdGenerator {
     private static final long EPOCH = 1288834974657L; // Twitter snowflake epoch (Nov 04, 2010, 01:42:54 UTC)
-    
+
     // Classic Twitter Snowflake bit allocation
     // private static final long SIGN_BITS = 1L;        // Always 0, reserved for future use
     private static final long TIMESTAMP_BITS = 41L;  // Milliseconds since epoch
@@ -17,15 +17,14 @@ public class SnowflakeIdGenerator {
     private static final long MAX_DATACENTER_ID = ~(-1L << DATACENTER_ID_BITS);  // 31
     private static final long MAX_MACHINE_ID = ~(-1L << MACHINE_ID_BITS);        // 31
     private static final long MAX_SEQUENCE = ~(-1L << SEQUENCE_BITS);            // 4095
+    // Maximum timestamp value (69 years from epoch)
+    private static final long MAX_TIMESTAMP = ~(-1L << TIMESTAMP_BITS);          // 2^41 - 1
 
     // Bit shifts for each component
     private static final long MACHINE_ID_SHIFT = SEQUENCE_BITS;
     private static final long DATACENTER_ID_SHIFT = SEQUENCE_BITS + MACHINE_ID_BITS;
     private static final long TIMESTAMP_SHIFT = SEQUENCE_BITS + MACHINE_ID_BITS + DATACENTER_ID_BITS;
     private static final String BASE62_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    // Maximum timestamp value (69 years from epoch)
-    private static final long MAX_TIMESTAMP = ~(-1L << TIMESTAMP_BITS);
 
     private final long datacenterId;
     private final long machineId;
@@ -52,7 +51,7 @@ public class SnowflakeIdGenerator {
         // Handle clock drift
         if (currentTimestamp < lastTimestamp) {
             throw new RuntimeException(
-                String.format("Clock moved backwards. Refusing to generate id for %d milliseconds", 
+                String.format("Clock moved backwards. Refusing to generate id for %d milliseconds",
                     lastTimestamp - currentTimestamp));
         }
 
@@ -94,11 +93,11 @@ public class SnowflakeIdGenerator {
     private long generateId(long timestamp, long sequence) {
         // Calculate timestamp bits (milliseconds since epoch)
         long timestampBits = timestamp - EPOCH;
-        
+
         // Validate timestamp range
         if (timestampBits > MAX_TIMESTAMP) {
             throw new RuntimeException(
-                String.format("Timestamp bits overflow. Maximum timestamp is %d milliseconds from epoch", 
+                String.format("Timestamp bits overflow. Maximum timestamp is %d milliseconds from epoch",
                     MAX_TIMESTAMP));
         }
 
@@ -125,4 +124,4 @@ public class SnowflakeIdGenerator {
         }
         return sb.reverse().toString();
     }
-} 
+}

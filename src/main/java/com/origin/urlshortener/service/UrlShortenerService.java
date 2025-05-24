@@ -57,7 +57,6 @@ public class UrlShortenerService {
         try {
             url = url.trim();  // Optional: strip whitespace
             URI uri = new URI(url);
-            System.out.println("uri.getScheme():" + uri.getScheme());
             if (uri.getScheme() == null || uri.getHost() == null) {
                 throw new InvalidUrlException("Invalid URL format: scheme and host are required");
             }
